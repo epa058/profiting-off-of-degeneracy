@@ -87,22 +87,13 @@ class Blackjack:
         Calculates the value of a hand, handles Aces correctly.
         is_soft is True if an Ace is counted as 11.
         """
-        value = 0
-        num_aces = 0
-        for card in hand:
-            rank = card['rank']
-            value += self.card_values[rank]
-            if rank == 'A':
-                num_aces += 1
-
-        is_soft = num_aces > 0
+        value = sum(self.card_values[card['rank']] for card in hand)
+        num_aces = sum(1 for card in hand if card['rank'] == 'A')
         while value > 21 and num_aces > 0:
             value -= 10
             num_aces -= 1
-        
-        if num_aces == 0:
-            is_soft = False
 
+        is_soft = num_aces > 0 and value <= 21
         return value, is_soft
 
     def is_pair(self, hand):
@@ -274,5 +265,5 @@ if __name__ == "__main__":
     blackjack_bot = Blackjack(num_decks=8)
     
 # Play
-    for _ in range(10000):
+    for _ in range(100):
         blackjack_bot.play_hand()
